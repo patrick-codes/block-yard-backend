@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+require("dotenv").config();
+
+const { upload } = require("../confiq/cloudinary");
 const {
   createProduct,
   getProducts,
@@ -8,7 +11,7 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-router.post("/", createProduct);
+router.post("/", upload.single("image"), createProduct);
 router.get("/", getProducts);
 router.get("/:id", getProduct);
 router.put("/:id", updateProduct);

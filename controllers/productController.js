@@ -10,10 +10,12 @@ exports.createProduct = async (req, res) => {
       price,
       stock,
       category,
-      image,
+      image: req.file?.path,
     });
     await products.save();
-    res.status(201).json(product);
+    res
+      .status(201)
+      .json({ message: "Product Uploaded Succesfully!!", products });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

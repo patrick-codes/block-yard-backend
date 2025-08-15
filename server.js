@@ -7,6 +7,8 @@ const productRoute = require("./routes/productRoute");
 const inventoryRoutes = require("./routes/inventoryRoute");
 const orderRoute = require("./routes/orderRoute");
 const analyticRoutes = require("./routes/analyticRoutes");
+require("./jobs/orderStatusJob");
+
 const errorMiddleware = require("./middleware/errorMiddleware");
 
 dotenv.config();

@@ -8,6 +8,6 @@ const {
 
 router.post("/", createOrder);
 router.get("/", getOrders);
-router.put("/:id", updateOrderStatus);
+router.patch("/:orderId/status", updateOrderStatus);
 
 module.exports = router;

@@ -26,7 +26,13 @@ exports.createOrder = async (req, res) => {
       await productData.save();
     }
 
-    const newOrder = new order({ customer, items, totalAmount });
+    // New order with "Processing" status after stock deduction
+    const newOrder = new order({
+      customer,
+      items,
+      totalAmount,
+      status: "Processing",
+    });
     await newOrder.save();
 
     res.status(201).json(newOrder);
@@ -40,21 +46,45 @@ exports.getOrders = async (req, res) => {
     const orders = await order
       .find()
       .populate("customer")
-      .populate("items.product");
+      .populate("items.product", "name price image");
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: er.message });
   }
 };
 
 exports.updateOrderStatus = async (req, res) => {
   try {
-    const order = await order.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { new: true }
-    );
-    res.json(order);
+    const { status } = req.body;
+    const allowedStatuses = [
+      "Pending",
+      "Processing",
+      "Shipped",
+      "Completed",
+      "Cancelled",
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: `Invalid status: ${status}` });
+    }
+
+    const orderData = await order.findById(req.params.orderId);
+    if (!orderData) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    orderData.status = status;
+    orderData.statusHistory.push({
+      status,
+      changedBy: req.user?.id || "system",
+    });
+
+    await orderData.save();
+
+    res.json({
+      message: `Order status updated to ${status}`,
+      order: orderData,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
