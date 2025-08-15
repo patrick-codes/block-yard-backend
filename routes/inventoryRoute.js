@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const {
+  updateInventory,
   getInventory,
-  addInventory,
 } = require("../controllers/inventoryController");
-const auth = require("../middleware/authMiddleware");
 
+router.post("/update", updateInventory);
 router.get("/", getInventory);
-router.post("/", auth, addInventory);
 
 module.exports = router;

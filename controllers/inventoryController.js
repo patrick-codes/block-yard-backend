@@ -1,15 +1,36 @@
-const jwt = require("jsonwebtoken");
+const inventory = require("../models/inventory");
+const product = require("../models/product");
 
-module.exports = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1];
-  if (!token)
-    return res.status(401).json({ message: "No token, authorization denied" });
-
+exports.updateInventory = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
+    const { productId, quantity, type } = req.body;
+    const products = await product.findById(productId);
+    if (!products)
+      return res.status(404).json({ message: "Product not found" });
+
+    // Adjust stock
+    products.stock =
+      type === "IN" ? products.stock + quantity : products.stock - quantity;
+    await product.save();
+
+    const inventoryRecord = new inventory({
+      product: productId,
+      quantity,
+      type,
+    });
+    await inventoryRecord.save();
+
+    res.status(200).json({ product, inventoryRecord });
   } catch (err) {
-    res.status(401).json({ message: "Token is not valid" });
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getInventory = async (req, res) => {
+  try {
+    const records = await inventory.find().populate("product");
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
