@@ -11,12 +11,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Twilio client
-const twilioClient = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
-
 const sendOrderNotification = async (order, status) => {
   const customer = await User.findById(order.customer);
 
@@ -31,15 +25,6 @@ const sendOrderNotification = async (order, status) => {
     subject: `Order Status Updated - ${status}`,
     text: message,
   });
-
-  // Send SMS (only if phone number exists)
-  if (customer.phone) {
-    await twilioClient.messages.create({
-      body: message,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: customer.phone,
-    });
-  }
 };
 
 // Export function in CommonJS style
