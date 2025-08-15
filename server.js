@@ -19,5 +19,5 @@ app.use("/api/inventory", require("./src/routes/inventoryRoutes"));
 // Error handling middleware
 app.use(require("./src/middleware/errorMiddleware"));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
