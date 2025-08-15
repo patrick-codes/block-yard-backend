@@ -3,22 +3,33 @@ const product = require("../models/product");
 
 exports.createOrder = async (req, res) => {
   try {
-    const { customer, items } = req.body;
+    const customer = req.body.customer || req.body.userId;
+    const items =
+      req.body.items ||
+      req.body.products?.map((p) => ({
+        product: p.productId,
+        quantity: p.quantity,
+      }));
+
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ message: "Items array is required" });
+    }
 
     let totalAmount = 0;
     for (let item of items) {
-      const products = await product.findById(item.product);
-      if (!products)
+      const productData = await product.findById(item.product);
+      if (!productData) {
         return res.status(404).json({ message: "Product not found" });
-      totalAmount += products.price * item.quantity;
-      products.stock -= item.quantity;
-      await products.save();
+      }
+      totalAmount += productData.price * item.quantity;
+      productData.stock -= item.quantity;
+      await productData.save();
     }
 
-    const order = new order({ customer, items, totalAmount });
-    await order.save();
+    const newOrder = new order({ customer, items, totalAmount });
+    await newOrder.save();
 
-    res.status(201).json(order);
+    res.status(201).json(newOrder);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
