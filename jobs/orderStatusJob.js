@@ -1,18 +1,16 @@
 const cron = require("node-cron");
-const order = require("../models/order");
+const Order = require("../models/order");
 
-// Runs every day at midnight
 cron.schedule("0 0 * * *", async () => {
   try {
-    console.log("🔄 Checking for shipped orders to complete...");
+    console.log("🔄 Checking shipped orders to mark as completed...");
 
-    // Find orders in "Processing" older than 3 days
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-    const ordersToUpdate = await order.find({
-      status: "Processing",
-      updatedAt: { $lte: threeDaysAgo },
+    const ordersToUpdate = await Order.find({
+      status: "Shipped",
+      shippedAt: { $lte: twoDaysAgo },
     });
 
     for (let ord of ordersToUpdate) {
