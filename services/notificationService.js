@@ -1,10 +1,9 @@
 const nodemailer = require("nodemailer");
-const twilio = require("twilio");
-const User = require("../models/user");
+const user = require("../models/user");
 
 // Email transporter
 const transporter = nodemailer.createTransport({
-  service: "Gmail", // You can use SMTP for SendGrid, Mailgun, etc.
+  service: "Gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -12,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendOrderNotification = async (order, status) => {
-  const customer = await User.findById(order.customer);
+  const customer = await user.findById(order.customer);
 
   if (!customer) return;
 

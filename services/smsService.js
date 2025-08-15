@@ -12,7 +12,7 @@ async function sendSmsHelper({ to, from = "", content }) {
 
   const body = {
     to,
-    from: "Marketa",
+    from: "BlockYard",
     content,
     clientId,
     clientSecret,

@@ -1,5 +1,7 @@
 const order = require("../models/order");
 const product = require("../models/product");
+const user = require("../models/user");
+const sendSmsHelper = require("../services/smsService");
 const { sendOrderNotification } = require("../services/notificationService");
 
 exports.createOrder = async (req, res) => {
@@ -34,7 +36,20 @@ exports.createOrder = async (req, res) => {
       totalAmount,
       status: "Processing",
     });
+
     await newOrder.save();
+
+    const newuser = await user.findById(req.body.userId);
+
+    let phone = newuser.phone;
+    if (phone.startsWith("0")) {
+      phone = "233" + phone.slice(1);
+    }
+
+    await sendSmsHelper({
+      to: phone,
+      content: `Dear ${newuser.name}, your order #${newOrder.id} has being received. We will notify you when it is dispatched. Track your order: https://yourshop.com/orders/${newOrder.id}`,
+    });
 
     res.status(201).json(newOrder);
   } catch (err) {
@@ -82,6 +97,18 @@ exports.updateOrderStatus = async (req, res) => {
 
     await orderData.save();
 
+    // const newuser = await user.findById(data.metadata.sellerId);
+
+    // let phone = "0245513607";
+    // if (phone.startsWith("0")) {
+    //   phone = "233" + phone.slice(1);
+    // }
+
+    // await sendSmsHelper({
+    //   to: phone,
+    //   content: `Hello ${newuser.email}, your order #${orderData._id} status has been created, Order Status: ${status}.`,
+    // });
+
     // Send real-time notification
     await sendOrderNotification(orderData, status);
 
@@ -109,12 +136,25 @@ exports.adminMarksOrder = async (req, res) => {
     }
 
     neworder.status = "Shipped";
+    neworder.paymentStatus = "Paid";
     neworder.shippedAt = new Date();
 
     await neworder.save();
 
-    // Send real-time notification
-    await sendOrderNotification(neworder);
+    const newuser = await user.findById(neworder.customer);
+    if (!newuser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let phone = newuser.phone;
+    if (phone.startsWith("0")) {
+      phone = "233" + phone.slice(1);
+    }
+
+    await sendSmsHelper({
+      to: phone,
+      content: `Hello ${newuser.name}, your order #${neworder.id} status has been updated to: ${neworder.status}.`,
+    });
 
     res.json({ message: "Order marked as shipped", order });
   } catch (err) {

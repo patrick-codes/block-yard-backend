@@ -4,7 +4,7 @@ const Product = require("../models/product");
 // Total sales
 exports.getTotalSales = async (req, res) => {
   try {
-    const orders = await Order.find({ paymentStatus: "paid" });
+    const orders = await Order.find({ paymentStatus: "Paid" });
     const totalSales = orders.reduce(
       (sum, order) => sum + order.totalAmount,
       0
@@ -18,14 +18,16 @@ exports.getTotalSales = async (req, res) => {
 // Top-selling products
 exports.getTopProducts = async (req, res) => {
   try {
-    const orders = await Order.find().populate("products.product");
+    const orders = await Order.find().populate("items.product");
     const productSales = {};
 
     orders.forEach((order) => {
-      order.products.forEach((item) => {
-        const productName = item.product.name;
-        productSales[productName] =
-          (productSales[productName] || 0) + item.quantity;
+      (order.items || []).forEach((item) => {
+        if (item.product) {
+          const productName = item.product.name;
+          productSales[productName] =
+            (productSales[productName] || 0) + item.quantity;
+        }
       });
     });
 
