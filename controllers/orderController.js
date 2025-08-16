@@ -97,19 +97,21 @@ exports.updateOrderStatus = async (req, res) => {
 
     await orderData.save();
 
-    // const newuser = await user.findById(data.metadata.sellerId);
+    const newuser = await user.findById(orderData.customer);
+    if (!newuser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // let phone = "0245513607";
-    // if (phone.startsWith("0")) {
-    //   phone = "233" + phone.slice(1);
-    // }
+    let phone = newuser.phone;
+    if (phone.startsWith("0")) {
+      phone = "233" + phone.slice(1);
+    }
 
-    // await sendSmsHelper({
-    //   to: phone,
-    //   content: `Hello ${newuser.email}, your order #${orderData._id} status has been created, Order Status: ${status}.`,
-    // });
+    await sendSmsHelper({
+      to: phone,
+      content: `Hello ${newuser.name}, your order #${orderData.id} status has been updated to: ${orderData.status}.`,
+    });
 
-    // Send real-time notification
     await sendOrderNotification(orderData, status);
 
     res.json({
