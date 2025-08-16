@@ -156,6 +156,8 @@ exports.adminMarksOrder = async (req, res) => {
       content: `Hello ${newuser.name}, your order #${neworder.id} status has been updated to: ${neworder.status}.`,
     });
 
+    await sendOrderNotification(neworder, "Shipped");
+
     res.json({ message: "Order marked as shipped", order });
   } catch (err) {
     res.status(500).json({ message: err.message });
