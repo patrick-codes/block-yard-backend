@@ -11,7 +11,7 @@ exports.updateInventory = async (req, res) => {
     // Adjust stock
     products.stock =
       type === "IN" ? products.stock + quantity : products.stock - quantity;
-    await product.save();
+    await products.save();
 
     const inventoryRecord = new inventory({
       product: productId,
@@ -20,7 +20,7 @@ exports.updateInventory = async (req, res) => {
     });
     await inventoryRecord.save();
 
-    res.status(200).json({ product, inventoryRecord });
+    res.status(200).json({ products, inventoryRecord });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
