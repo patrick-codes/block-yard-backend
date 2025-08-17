@@ -155,7 +155,7 @@ exports.adminMarksOrder = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${neworder.id} status has been updated to: ${neworder.status}.`,
+      content: `Hello ${newuser.name}, your order #${neworder.id} status has been ${neworder.status}.`,
     });
 
     await sendOrderNotification(neworder, "Shipped");
