@@ -109,7 +109,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${orderData.id} status has been ${orderData.status}.`,
+      content: `Hello ${newuser.name}, your order #${orderData.id} has been ${orderData.status}.`,
     });
 
     await sendOrderNotification(orderData, status);
@@ -155,7 +155,7 @@ exports.adminMarksOrder = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${neworder.id} status has been ${neworder.status}.`,
+      content: `Hello ${newuser.name}, your order #${neworder.id} has been ${neworder.status}.`,
     });
 
     await sendOrderNotification(neworder, "Shipped");
