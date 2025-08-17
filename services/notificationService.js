@@ -15,13 +15,13 @@ const sendOrderNotification = async (order, status) => {
 
   if (!customer) return;
 
-  const message = `Hello ${customer.name}, your order #${order._id} status has been ${status}.`;
+  const message = `Hello ${customer.name}, your order #${order._id} has been ${status}.`;
 
   // Send Email
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: customer.email,
-    subject: `Order Status Updated - ${status}`,
+    subject: `Order Status: ${status}`,
     text: message,
   });
 };
