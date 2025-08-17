@@ -48,8 +48,10 @@ exports.createOrder = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Dear ${newuser.name}, your order #${newOrder.id} has being received. We will notify you when it is dispatched. Track your order: https://yourshop.com/orders/${newOrder.id}`,
+      content: `Dear ${newuser.name}, your order with ID: #${newOrder.id} has being received. We will notify you when it is dispatched. Track your order: https://yourshop.com/orders/${newOrder.id}`,
     });
+
+    await sendOrderNotification(newOrder, "Processed");
 
     res.status(201).json(newOrder);
   } catch (err) {
@@ -109,7 +111,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${orderData.id} has been ${orderData.status}.`,
+      content: `Hello ${newuser.name}, your order with ID: #${orderData.id} has been ${orderData.status}.`,
     });
 
     await sendOrderNotification(orderData, status);
@@ -155,7 +157,7 @@ exports.adminMarksOrder = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${neworder.id} has been ${neworder.status}.`,
+      content: `Hello ${newuser.name}, your order with ID: #${neworder.id} has been ${neworder.status}.`,
     });
 
     await sendOrderNotification(neworder, "Shipped");
