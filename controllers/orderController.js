@@ -109,7 +109,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     await sendSmsHelper({
       to: phone,
-      content: `Hello ${newuser.name}, your order #${orderData.id} status has been updated to: ${orderData.status}.`,
+      content: `Hello ${newuser.name}, your order #${orderData.id} status has been ${orderData.status}.`,
     });
 
     await sendOrderNotification(orderData, status);
