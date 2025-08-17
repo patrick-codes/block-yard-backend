@@ -15,7 +15,7 @@ const sendOrderNotification = async (order, status) => {
 
   if (!customer) return;
 
-  const message = `Hello ${customer.name}, your order #${order._id} status has been updated to: ${status}.`;
+  const message = `Hello ${customer.name}, your order #${order._id} status has been ${status}.`;
 
   // Send Email
   await transporter.sendMail({

@@ -34,7 +34,7 @@ exports.createOrder = async (req, res) => {
       customer,
       items,
       totalAmount,
-      status: "Processing",
+      status: "Processed",
     });
 
     await newOrder.save();
@@ -74,7 +74,7 @@ exports.updateOrderStatus = async (req, res) => {
     const { status } = req.body;
     const allowedStatuses = [
       "Pending",
-      "Processing",
+      "Processed",
       "Shipped",
       "Completed",
       "Cancelled",
@@ -131,7 +131,7 @@ exports.adminMarksOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if (neworder.status !== "Processing") {
+    if (neworder.status !== "Processed") {
       return res
         .status(400)
         .json({ message: "Order must be in Processing before shipping" });
