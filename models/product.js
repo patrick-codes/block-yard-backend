@@ -13,3 +13,11 @@ const productSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Product", productSchema);
+
+/*
+ Dimensions: 16" x 8" x 8"
+                            Weight: 32 lbs each
+                            Compressive Strength: 1900 psi
+                            Water Absorption: < 10%
+                            Color: Standard Gray
+*/
