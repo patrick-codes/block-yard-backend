@@ -7,6 +7,7 @@ const productRoute = require("./routes/productRoute");
 const inventoryRoutes = require("./routes/inventoryRoute");
 const orderRoute = require("./routes/orderRoute");
 const analyticRoutes = require("./routes/analyticRoutes");
+const sms = require("./routes/sms_router");
 require("./jobs/orderStatusJob");
 
 const errorMiddleware = require("./middleware/errorMiddleware");
@@ -24,6 +25,7 @@ app.use("/api/products", productRoute);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/orders", orderRoute);
 app.use("/api/analytics", analyticRoutes);
+app.use("/api/sms", sms);
 
 // Error handling middleware
 // app.use(errorMiddleware);
