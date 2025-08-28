@@ -20,7 +20,8 @@ exports.createSms = async (req, res) => {
 
     await smsHelper({
       to: phoneN,
-      content: `Hello ${name}, your order with ID: #${appid} has been submitted successfully on ${dateTime}.`,
+      content: `Hello ${name}, your order (ID: #${appid}) has been successfully received on ${dateTime}. Thank you for choosing us!
+`,
     });
 
     res.status(201).json({
