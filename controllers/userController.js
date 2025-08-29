@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 // Generate JWT token
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 // Register user
@@ -21,7 +21,7 @@ exports.registerUser = async (req, res) => {
       name: user.name,
       phone: user.phone,
       email: user.email,
-      token: generateToken(user._id, user.role),
+      token: generateToken(user._id),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -45,7 +45,7 @@ exports.loginUser = async (req, res) => {
       name: user.name,
       phone: user.phone,
       email: user.email,
-      token: generateToken(user._id, user.role),
+      token: generateToken(user._id),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
